@@ -30,7 +30,7 @@ pipeline {
                 sh 'docker build -t my-rest-api:1.0 .'
             }
         }
-        stage ('Docker Push'){
+        stage('Docker Push'){
             steps{
                 whitCredentials([usernamePassword(credentialId: 'docker_cred', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]{
                     sh 'docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD'
