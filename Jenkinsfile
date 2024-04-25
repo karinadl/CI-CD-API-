@@ -20,18 +20,19 @@ pipeline {
         }
         stage("Build Image") {
             steps {
-                docker.build('karinadeleon/my-api-rest:latest', '.').inside {
-                        // Puedes agregar pasos adicionales dentro del contenedor Docker si es necesario
-                    }
+                script {
+                    docker.build('karinadeleon/my-rest-api:latest', '.')
+                }
             }
         }
         
         stage ('Docker Push') {
             steps {
                 script {
-                     docker.withRegistry('https://registry.hub.docker.com', 'docker_cred') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker_cred') {
                         docker.image('karinadeleon/my-rest-api:latest').push()
                     }
+                }
             }
         }
         
