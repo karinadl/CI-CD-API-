@@ -20,20 +20,18 @@ pipeline {
         }
         stage("Build Image") {
             steps {
-                bat 'docker build -t my-rest-api:1.0 .'
+                docker.build('karinadeleon/my-api-rest:latest', '.').inside {
+                        // Puedes agregar pasos adicionales dentro del contenedor Docker si es necesario
+                    }
             }
         }
         
         stage ('Docker Push') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'docker_cred', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
-                        bat 'docker login -u karinadeleon -p 24677811d'
-                        bat 'docker tag my-rest-api:1.0 bashidkk/my-rest-api:1.0'
-                        bat 'docker push bashidkk/my-rest-api:1.0'
-                        bat 'docker logout'
+                     docker.withRegistry('https://registry.hub.docker.com', 'docker_cred') {
+                        docker.image('karinadeleon/my-rest-api:latest').push()
                     }
-                }
             }
         }
         
