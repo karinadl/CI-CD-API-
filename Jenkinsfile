@@ -4,11 +4,6 @@ pipeline {
     environment {
         NODEJS_HOME = tool name: 'node'
         PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
-        DOCKER_REGISTRY = 'docker.io' // Cambiar si se utiliza un registro diferente
-        DOCKER_IMAGE_NAME = 'my-rest-api'
-        DOCKER_IMAGE_TAG = '1.0'
-        DOCKERHUB_USERNAME = credentials('docker_cred_username')
-        DOCKERHUB_PASSWORD = credentials('docker_cred_password')
     }
     
     stages {
@@ -24,27 +19,28 @@ pipeline {
             }
         }
         
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}")
-                }
-            }
-        }
-        
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://${DOCKER_REGISTRY}', 'docker-registry-credentials') {
-                        docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").push()
-                    }
-                }
-            }
-        }
-        
         stage('Build') {
             steps {
                 bat 'npm run dev'
+            }
+        }
+        
+        stage("Build Image") {
+            steps {
+                bat 'docker build -t my-rest-api:1.0 .'
+            }
+        }
+        
+        stage ('Docker Push') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker_cred', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
+                        sh 'docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD'
+                        sh 'docker tag my-rest-api:1.0 bashidkk/my-rest-api:1.0'
+                        sh 'docker push bashidkk/my-rest-api:1.0'
+                        sh 'docker logout'
+                    }
+                }
             }
         }
     }
