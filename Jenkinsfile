@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker_cred', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
-                        bat 'docker login -u $DOCKERHUB_USERNAME -p 24677811d'
+                        bat 'docker login -u karinadeleon -p 24677811d'
                         bat 'docker tag my-rest-api:1.0 bashidkk/my-rest-api:1.0'
                         bat 'docker push bashidkk/my-rest-api:1.0'
                         bat 'docker logout'
