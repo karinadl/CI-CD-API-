@@ -18,13 +18,6 @@ pipeline {
                 bat 'npm install cors@^2.8.5 express@^4.19.2 mysql@^2.18.1 mysql2@^3.9.3 pg@^8.11.5'
             }
         }
-        
-        stage('Build') {
-            steps {
-                
-                bat 'npm run dev'
-            }
-        }
         stage("Build Image"){
             steps{
                 sh 'docker build -t my-rest-api:1.0 .'
@@ -38,6 +31,12 @@ pipeline {
                     sh 'docker push bashidkk/my-res-api:1.0'
                     sh 'docker logout'
                 }
+            }
+        }
+        stage('Build') {
+            steps {
+                
+                bat 'npm run dev'
             }
         }
     }
