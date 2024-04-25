@@ -20,16 +20,16 @@ pipeline {
         }
         stage("Build Image"){
             steps{
-                sh 'docker build -t my-rest-api:1.0 .'
+                bat 'docker build -t my-rest-api:1.0 .'
             }
         }
         stage ('Docker Push'){
             steps{
                 whitCredentials([usernamePassword(credentialId: 'docker_cred', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]){
-                    sh 'docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD'
-                    sh 'docker tag my-rest-api:1.0 bashidkk/my-rest-api:1.0'
-                    sh 'docker push bashidkk/my-res-api:1.0'
-                    sh 'docker logout'
+                    bat 'docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD'
+                    bat 'docker tag my-rest-api:1.0 bashidkk/my-rest-api:1.0'
+                    bat 'docker push bashidkk/my-res-api:1.0'
+                    bat 'docker logout'
                 }
             }
         }
