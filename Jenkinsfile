@@ -18,7 +18,13 @@ pipeline {
                 bat 'npm install cors@^2.8.5 express@^4.19.2 mysql@^2.18.1 mysql2@^3.9.3 pg@^8.11.5'
             }
         }
-        
+        stage("Build Image") {
+            steps {
+                script {
+                    docker.build('karinadeleon/my-rest-api:latest', '.')
+                }
+            }
+        }
         stage('Build') {
             steps {
                 bat 'npm run dev'
