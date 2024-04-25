@@ -19,24 +19,6 @@ pipeline {
             }
         }
         
-        stage("Build Image") {
-            steps {
-                script {
-                    docker.build('karinadeleon/my-rest-api:latest', '.')
-                }
-            }
-        }
-        
-        stage ('Docker Push') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker_cred') {
-                        docker.image('karinadeleon/my-rest-api:latest').push()
-                    }
-                }
-            }
-        }
-        
         stage('Build') {
             steps {
                 bat 'npm run dev'
